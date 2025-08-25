@@ -89,7 +89,7 @@ ScreenGui.ResetOnSpawn = false -- keep GUI after death
 ScreenGui.Parent = player:WaitForChild("PlayerGui")
 
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0,220,0,250)
+mainFrame.Size = UDim2.new(0,220,0,320)
 mainFrame.Position = UDim2.new(0.5,-110,0.5,-125)
 mainFrame.BackgroundColor3 = Color3.fromRGB(40,40,40)
 mainFrame.Parent = ScreenGui
