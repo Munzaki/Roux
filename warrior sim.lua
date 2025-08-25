@@ -144,6 +144,25 @@ createButton("Toggle Auto Sell", 50, function()
     print("Auto Sell: "..(autoSellActive and "ON" or "OFF"))
 end)
 
+createButton("Toggle Auto Sell (Gold)", 90, function()
+    autoSellGoldActive = not autoSellGoldActive
+    print("Auto Sell (Gold): "..(autoSellGoldActive and "ON" or "OFF"))
+end)
+
+-- Auto Sell (Gold) loop
+spawn(function()
+    while true do
+        if autoSellGoldActive then
+            pcall(function()
+                local args = {0}
+                touchedDetector:FireServer(unpack(args))
+            end)
+            wait(1) -- small delay to prevent spamming
+        end
+        wait(0.1)
+    end
+end)
+
 -- Teleport Delay TextBox
 local delayLabel = Instance.new("TextLabel")
 delayLabel.Size = UDim2.new(0,200,0,20)
