@@ -134,17 +134,25 @@ local function createButton(text, y, callback)
 end
 
 -- Buttons
-createButton("Toggle Kill Aura", 10, function()
+-- Buttons spacing
+local buttonYStart = 10
+local buttonSpacing = 40
+
+-- Kill Aura
+createButton("Toggle Kill Aura", buttonYStart, function()
     killAuraActive = not killAuraActive
     print("Kill Aura: "..(killAuraActive and "ON" or "OFF"))
 end)
 
-createButton("Toggle Auto Sell", 50, function()
+-- Auto Sell Moon
+createButton("Toggle Auto Sell (Moon)", buttonYStart + buttonSpacing, function()
     autoSellActive = not autoSellActive
-    print("Auto Sell: "..(autoSellActive and "ON" or "OFF"))
+    print("Auto Sell (Moon): "..(autoSellActive and "ON" or "OFF"))
 end)
 
-createButton("Toggle Auto Sell (Gold)", 90, function()
+-- Auto Sell Gold
+local autoSellGoldActive = false
+createButton("Toggle Auto Sell (Gold)", buttonYStart + 2*buttonSpacing, function()
     autoSellGoldActive = not autoSellGoldActive
     print("Auto Sell (Gold): "..(autoSellGoldActive and "ON" or "OFF"))
 end)
@@ -157,11 +165,12 @@ spawn(function()
                 local args = {0}
                 touchedDetector:FireServer(unpack(args))
             end)
-            wait(1) -- small delay to prevent spamming
+            wait(1)
         end
         wait(0.1)
     end
 end)
+
 
 -- Teleport Delay TextBox
 local delayLabel = Instance.new("TextLabel")
