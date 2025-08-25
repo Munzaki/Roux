@@ -190,7 +190,7 @@ weaponBox.FocusLost:Connect(function()
 end)
 
 -- Zone Selector Dropdown (at bottom)
-local zones = {"Desert","Egypt","Future","Grassland","Iceland","Lavaland","Mars","Moon"}
+local zones = {"Grassland","Desert","Iceland","Lavaland","Overseer","Egypt","Moon","Mars","Future"}
 
 local dropdown = Instance.new("TextButton")
 dropdown.Size = UDim2.new(0,200,0,30)
