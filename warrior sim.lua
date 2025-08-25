@@ -89,8 +89,8 @@ ScreenGui.ResetOnSpawn = false -- keep GUI after death
 ScreenGui.Parent = player:WaitForChild("PlayerGui")
 
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0,220,0,320)
-mainFrame.Position = UDim2.new(0.5,-110,0.5,-125)
+mainFrame.Size = UDim2.new(0,220,0,320) -- increased height to fit extra button
+mainFrame.Position = UDim2.new(0.5,-110,0.5,-160)
 mainFrame.BackgroundColor3 = Color3.fromRGB(40,40,40)
 mainFrame.Parent = ScreenGui
 mainFrame.Active = true
@@ -134,48 +134,29 @@ local function createButton(text, y, callback)
 end
 
 -- Buttons
--- Buttons spacing
-local buttonYStart = 10
-local buttonSpacing = 40
-
--- Kill Aura
-createButton("Toggle Kill Aura", buttonYStart, function()
+createButton("Toggle Kill Aura", 10, function()
     killAuraActive = not killAuraActive
     print("Kill Aura: "..(killAuraActive and "ON" or "OFF"))
 end)
 
--- Auto Sell Moon
-createButton("Toggle Auto Sell (Moon)", buttonYStart + buttonSpacing, function()
+createButton("Toggle Auto Sell", 50, function()
     autoSellActive = not autoSellActive
-    print("Auto Sell (Moon): "..(autoSellActive and "ON" or "OFF"))
+    print("Auto Sell: "..(autoSellActive and "ON" or "OFF"))
 end)
 
--- Auto Sell Gold
-local autoSellGoldActive = false
-createButton("Toggle Auto Sell (Gold)", buttonYStart + 2*buttonSpacing, function()
-    autoSellGoldActive = not autoSellGoldActive
-    print("Auto Sell (Gold): "..(autoSellGoldActive and "ON" or "OFF"))
+-- NEW Auto Sell (Gold) button
+createButton("Auto Sell (Gold)", 90, function()
+    pcall(function()
+        local args = {0}
+        touchedDetector:FireServer(unpack(args))
+    end)
+    print("Auto Sell (Gold) executed")
 end)
-
--- Auto Sell (Gold) loop
-spawn(function()
-    while true do
-        if autoSellGoldActive then
-            pcall(function()
-                local args = {0}
-                touchedDetector:FireServer(unpack(args))
-            end)
-            wait(1)
-        end
-        wait(0.1)
-    end
-end)
-
 
 -- Teleport Delay TextBox
 local delayLabel = Instance.new("TextLabel")
 delayLabel.Size = UDim2.new(0,200,0,20)
-delayLabel.Position = UDim2.new(0,10,0,90)
+delayLabel.Position = UDim2.new(0,10,0,130)
 delayLabel.BackgroundTransparency = 1
 delayLabel.Text = "Teleport Delay (seconds):"
 delayLabel.TextColor3 = Color3.new(1,1,1)
@@ -183,7 +164,7 @@ delayLabel.Parent = mainFrame
 
 local delayBox = Instance.new("TextBox")
 delayBox.Size = UDim2.new(0,200,0,25)
-delayBox.Position = UDim2.new(0,10,0,110)
+delayBox.Position = UDim2.new(0,10,0,150)
 delayBox.Text = tostring(teleportDelay)
 delayBox.BackgroundColor3 = Color3.fromRGB(60,60,60)
 delayBox.TextColor3 = Color3.new(1,1,1)
@@ -197,7 +178,7 @@ end)
 -- Weapon Name TextBox
 local weaponLabel = Instance.new("TextLabel")
 weaponLabel.Size = UDim2.new(0,200,0,20)
-weaponLabel.Position = UDim2.new(0,10,0,140)
+weaponLabel.Position = UDim2.new(0,10,0,180)
 weaponLabel.BackgroundTransparency = 1
 weaponLabel.Text = "Weapon Name:"
 weaponLabel.TextColor3 = Color3.new(1,1,1)
@@ -205,7 +186,7 @@ weaponLabel.Parent = mainFrame
 
 local weaponBox = Instance.new("TextBox")
 weaponBox.Size = UDim2.new(0,200,0,25)
-weaponBox.Position = UDim2.new(0,10,0,160)
+weaponBox.Position = UDim2.new(0,10,0,200)
 weaponBox.Text = selectedWeaponName
 weaponBox.BackgroundColor3 = Color3.fromRGB(60,60,60)
 weaponBox.TextColor3 = Color3.new(1,1,1)
@@ -222,7 +203,7 @@ local zones = {"Grassland","Desert","Iceland","Lavaland","Overseer","Egypt","Moo
 
 local dropdown = Instance.new("TextButton")
 dropdown.Size = UDim2.new(0,200,0,30)
-dropdown.Position = UDim2.new(0,10,0,200)
+dropdown.Position = UDim2.new(0,10,0,230)
 dropdown.Text = "Zone: "..selectedZone
 dropdown.BackgroundColor3 = Color3.fromRGB(70,70,70)
 dropdown.TextColor3 = Color3.fromRGB(255,255,255)
@@ -230,7 +211,7 @@ dropdown.Parent = mainFrame
 
 local dropdownFrame = Instance.new("Frame")
 dropdownFrame.Size = UDim2.new(0,200,0, #zones*25)
-dropdownFrame.Position = UDim2.new(0,10,0,230)
+dropdownFrame.Position = UDim2.new(0,10,0,260)
 dropdownFrame.BackgroundColor3 = Color3.fromRGB(50,50,50)
 dropdownFrame.Visible = false
 dropdownFrame.Parent = mainFrame
