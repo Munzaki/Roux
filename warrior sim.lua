@@ -12,6 +12,7 @@ local touchedDetector = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForCh
 -- State variables
 local killAuraActive = false
 local autoSellActive = false
+local autoSellGoldActive = false
 local teleportDelay = 5 -- default seconds
 local selectedZone = "Moon"
 local selectedWeaponName = "Sword of the Epicredness"
@@ -69,12 +70,26 @@ spawn(function()
     end
 end)
 
--- Auto Sell loop
+-- Auto Sell loop (Moon)
 spawn(function()
     while true do
         if autoSellActive then
             pcall(function()
                 touchedDetector:FireServer(1)
+            end)
+            wait(1)
+        end
+        wait(0.1)
+    end
+end)
+
+-- Auto Sell loop (Gold)
+spawn(function()
+    while true do
+        if autoSellGoldActive then
+            pcall(function()
+                local args = {0}
+                touchedDetector:FireServer(unpack(args))
             end)
             wait(1)
         end
@@ -89,8 +104,8 @@ ScreenGui.ResetOnSpawn = false -- keep GUI after death
 ScreenGui.Parent = player:WaitForChild("PlayerGui")
 
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0,220,0,320) -- increased height to fit extra button
-mainFrame.Position = UDim2.new(0.5,-110,0.5,-160)
+mainFrame.Size = UDim2.new(0,220,0,350) -- increased height
+mainFrame.Position = UDim2.new(0.5,-110,0.5,-175)
 mainFrame.BackgroundColor3 = Color3.fromRGB(40,40,40)
 mainFrame.Parent = ScreenGui
 mainFrame.Active = true
@@ -139,18 +154,14 @@ createButton("Toggle Kill Aura", 10, function()
     print("Kill Aura: "..(killAuraActive and "ON" or "OFF"))
 end)
 
-createButton("Toggle Auto Sell", 50, function()
+createButton("Toggle Auto Sell (Moon)", 50, function()
     autoSellActive = not autoSellActive
-    print("Auto Sell: "..(autoSellActive and "ON" or "OFF"))
+    print("Auto Sell (Moon): "..(autoSellActive and "ON" or "OFF"))
 end)
 
--- NEW Auto Sell (Gold) button
-createButton("Auto Sell (Gold)", 90, function()
-    pcall(function()
-        local args = {0}
-        touchedDetector:FireServer(unpack(args))
-    end)
-    print("Auto Sell (Gold) executed")
+createButton("Toggle Auto Sell (Gold)", 90, function()
+    autoSellGoldActive = not autoSellGoldActive
+    print("Auto Sell (Gold): "..(autoSellGoldActive and "ON" or "OFF"))
 end)
 
 -- Teleport Delay TextBox
