@@ -112,7 +112,7 @@ mainFrame.BackgroundColor3 = Color3.fromRGB(40,40,40)
 mainFrame.Parent = ScreenGui
 mainFrame.Active = true
 
--- ✅ Improved GUI Dragging (patched in)
+-- ✅ Improved GUI Dragging (works on mobile + desktop)
 local dragging = false
 local dragStart, startPos
 
@@ -125,7 +125,7 @@ local function updateDrag(input)
 end
 
 mainFrame.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
         dragging = true
         dragStart = input.Position
         startPos = mainFrame.Position
@@ -138,7 +138,7 @@ mainFrame.InputBegan:Connect(function(input)
 end)
 
 UserInputService.InputChanged:Connect(function(input)
-    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
         updateDrag(input)
     end
 end)
