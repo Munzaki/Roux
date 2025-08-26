@@ -17,7 +17,7 @@ local autoSellActive = false
 local autoSellGoldActive = false
 local teleportDelay = 5 -- default seconds
 local selectedZone = "Moon"
-local selectedWeaponName = "Sword of Swords"
+local selectedWeaponName = "Katana of the Ninth Moon"
 
 -- Reference your sword (updated to use textbox weapon name)
 local function getSword()
