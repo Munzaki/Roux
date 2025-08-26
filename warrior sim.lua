@@ -18,7 +18,7 @@ local autoSellActive = false
 local autoSellGoldActive = false
 local teleportDelay = 5 -- default seconds
 local selectedZone = "Moon"
-local selectedWeaponName = "Mythic Sword of the Earth"
+local selectedWeaponName = "Sword of the Lands"
 local autoRespawnTeleportActive = false -- toggle for teleport-on-death
 local pendingDeathTeleport = false       -- internal flag set on death, used on respawn
 
