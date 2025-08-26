@@ -18,7 +18,7 @@ local autoSellActive = false
 local autoSellGoldActive = false
 local teleportDelay = 5 -- default seconds
 local selectedZone = "Moon"
-local selectedWeaponName = "Sword of the Epicredness"
+local selectedWeaponName = "Mythic Sword of the Earth"
 local autoRespawnTeleportActive = false -- ✅ new toggle
 
 -- Reference your sword (updated to use textbox weapon name)
