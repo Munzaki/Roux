@@ -112,51 +112,40 @@ mainFrame.BackgroundColor3 = Color3.fromRGB(40,40,40)
 mainFrame.Parent = ScreenGui
 mainFrame.Active = true
 
--- ✅ Mobile + Desktop GUI Dragging
+-- ✅ Improved GUI Dragging (patched in) – now mobile + desktop compatible
 local dragging = false
-local dragStartPos
-local frameStartPos
+local dragStart, startPos
 
-local function startDrag(input)
-    dragging = true
-    dragStartPos = input.Position
-    frameStartPos = mainFrame.Position
-end
-
-local function stopDrag()
-    dragging = false
-end
-
-local function doDrag(input)
-    if dragging then
-        local delta = input.Position - dragStartPos
-        mainFrame.Position = UDim2.new(
-            frameStartPos.X.Scale, frameStartPos.X.Offset + delta.X,
-            frameStartPos.Y.Scale, frameStartPos.Y.Offset + delta.Y
-        )
-    end
+local function updateDrag(input)
+    local delta = input.Position - dragStart
+    mainFrame.Position = UDim2.new(
+        startPos.X.Scale, startPos.X.Offset + delta.X,
+        startPos.Y.Scale, startPos.Y.Offset + delta.Y
+    )
 end
 
 mainFrame.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        startDrag(input)
+        dragging = true
+        dragStart = input.Position
+        startPos = mainFrame.Position
         input.Changed:Connect(function()
             if input.UserInputState == Enum.UserInputState.End then
-                stopDrag()
+                dragging = false
             end
         end)
     end
 end)
 
 UserInputService.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement then
-        doDrag(input)
+    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        updateDrag(input)
     end
 end)
 
 UserInputService.TouchMoved:Connect(function(touch, processed)
     if dragging and not processed then
-        doDrag(touch)
+        updateDrag(touch)
     end
 end)
 
