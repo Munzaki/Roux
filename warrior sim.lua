@@ -18,8 +18,9 @@ local autoSellActive = false
 local autoSellGoldActive = false
 local teleportDelay = 5 -- default seconds
 local selectedZone = "Moon"
-local selectedWeaponName = "Mythic Sword of the Earth"
-local autoRespawnTeleportActive = false -- ✅ new toggle
+local selectedWeaponName = "Sword of the Epicredness"
+local autoRespawnTeleportActive = false -- toggle for teleport-on-death
+local pendingDeathTeleport = false       -- internal flag set on death, used on respawn
 
 -- Reference your sword (updated to use textbox weapon name)
 local function getSword()
@@ -101,22 +102,39 @@ spawn(function()
     end
 end)
 
--- ✅ Auto Teleport to "Future" on death
+-- ===== Teleport-on-death handling (robust) =====
 local function setupDeathHandler(char)
     local humanoid = char:WaitForChild("Humanoid")
     humanoid.Died:Connect(function()
         if autoRespawnTeleportActive then
-            task.delay(1, function()
-                teleportEvent:FireServer("Future")
-                print("Auto Respawn Teleport -> Future")
-            end)
+            pendingDeathTeleport = true
         end
     end)
 end
 
--- hook into character spawns
-player.CharacterAdded:Connect(setupDeathHandler)
-if player.Character then setupDeathHandler(player.Character) end
+-- When the new character spawns (after death), fire the teleport if flagged
+player.CharacterAdded:Connect(function(char)
+    setupDeathHandler(char)
+    if autoRespawnTeleportActive and pendingDeathTeleport then
+        pendingDeathTeleport = false
+        -- wait for character parts to exist, then fire a few times to ensure server receives it
+        task.spawn(function()
+            char:WaitForChild("HumanoidRootPart", 5)
+            task.wait(0.25)
+            for i = 1, 3 do
+                pcall(function()
+                    teleportEvent:FireServer("Future")
+                end)
+                task.wait(0.25)
+            end
+        end)
+    end
+end)
+
+-- If already spawned when script runs, hook death handler
+if player.Character then
+    setupDeathHandler(player.Character)
+end
 
 -- GUI
 local ScreenGui = Instance.new("ScreenGui")
@@ -217,7 +235,7 @@ createButton("Toggle Auto Sell (Gold)", 90, function()
     print("Auto Sell (Gold): "..(autoSellGoldActive and "ON" or "OFF"))
 end)
 
--- ✅ NEW Auto Respawn Teleport Toggle
+-- Toggle for Auto Respawn Teleport
 createButton("Toggle Auto Respawn TP (Future)", 130, function()
     autoRespawnTeleportActive = not autoRespawnTeleportActive
     print("Auto Respawn Teleport: "..(autoRespawnTeleportActive and "ON" or "OFF"))
