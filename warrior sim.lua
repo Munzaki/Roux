@@ -12,7 +12,7 @@ local autoSellEnabled = false
 local autoSellGoldEnabled = false
 local selectedZone = "Moon"
 local teleportDelay = 5
-local weaponName = ""
+local weaponName = "Sword of Swords"
 
 -- GUI
 local ScreenGui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
@@ -76,7 +76,7 @@ weaponBox.FocusLost:Connect(function()
 end)
 
 -- Zone Dropdown (Scrollable)
-local zones = {"Grassland","Desert","Iceland","Lavaland","Overseer","Egypt","Moon","Mars","Future","Pluto","Neptune","Uranus","Saturn","Jupiter","Venus","Mercury"}
+local zones = {"Grassland","Desert","Iceland","Lavaland","Overseer","Egypt","Moon","Mars","Future"}
 
 local dropdown = Instance.new("TextButton", mainFrame)
 dropdown.Size = UDim2.new(0,200,0,30)
