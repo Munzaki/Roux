@@ -12,7 +12,7 @@ local autoSellEnabled = false
 local autoSellGoldEnabled = false
 local selectedZone = "Moon"
 local teleportDelay = 5
-local weaponName = "Sword of Swords"
+local weaponName = ""
 
 -- GUI
 local ScreenGui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
