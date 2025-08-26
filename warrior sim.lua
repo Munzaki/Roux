@@ -17,7 +17,7 @@ local autoSellActive = false
 local autoSellGoldActive = false
 local teleportDelay = 5 -- default seconds
 local selectedZone = "Moon"
-local selectedWeaponName = "Sword of Swords"
+local selectedWeaponName = "Sword of the Epicredness"
 local guiCollapsed = false -- tracks if GUI is minimized
 
 -- Reference your sword (updated to use textbox weapon name)
@@ -103,11 +103,13 @@ end)
 -- GUI
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "AutoScriptGUI"
-ScreenGui.ResetOnSpawn = false -- keep GUI after death
+ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = player:WaitForChild("PlayerGui")
 
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0,220,0,350)
+local fullSize = UDim2.new(0,220,0,350) -- original full size
+local collapsedSize = UDim2.new(0,40,0,40) -- size when minimized
+mainFrame.Size = fullSize
 mainFrame.Position = UDim2.new(0.5,-110,0.5,-175)
 mainFrame.BackgroundColor3 = Color3.fromRGB(40,40,40)
 mainFrame.Parent = ScreenGui
@@ -273,10 +275,21 @@ minimiseBtn.Parent = mainFrame
 
 minimiseBtn.MouseButton1Click:Connect(function()
     guiCollapsed = not guiCollapsed
-    for _, obj in pairs(mainFrame:GetChildren()) do
-        if obj ~= minimiseBtn then
-            obj.Visible = not guiCollapsed
+    if guiCollapsed then
+        -- Collapse GUI
+        mainFrame.Size = collapsedSize
+        for _, obj in pairs(mainFrame:GetChildren()) do
+            if obj ~= minimiseBtn then
+                obj.Visible = false
+            end
         end
+        minimiseBtn.Text = "+"
+    else
+        -- Expand GUI
+        mainFrame.Size = fullSize
+        for _, obj in pairs(mainFrame:GetChildren()) do
+            obj.Visible = true
+        end
+        minimiseBtn.Text = "-"
     end
-    minimiseBtn.Text = guiCollapsed and "+" or "-"
 end)
