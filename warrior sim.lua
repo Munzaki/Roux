@@ -17,7 +17,7 @@ local autoSellActive = false
 local autoSellGoldActive = false
 local teleportDelay = 5 -- default seconds
 local selectedZone = "Moon"
-local selectedWeaponName = "Enchanted Eye Sword"
+local selectedWeaponName = "Mythic Sword of the Earth"
 
 -- Reference your sword (updated to use textbox weapon name)
 local function getSword()
