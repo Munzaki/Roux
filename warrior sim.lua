@@ -10,6 +10,7 @@ local player = Players.LocalPlayer
 -- References
 local SwordAttackEvent = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("Client"):WaitForChild("SwordAttack")
 local touchedDetector = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("Client"):WaitForChild("touchedDetector")
+local teleportEvent = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("Client"):WaitForChild("Teleport")
 
 -- State variables
 local killAuraActive = false
@@ -17,7 +18,8 @@ local autoSellActive = false
 local autoSellGoldActive = false
 local teleportDelay = 5 -- default seconds
 local selectedZone = "Moon"
-local selectedWeaponName = "Mythic Sword of the Earth"
+local selectedWeaponName = "Sword of the Epicredness"
+local autoRespawnTeleportActive = false -- ✅ new toggle
 
 -- Reference your sword (updated to use textbox weapon name)
 local function getSword()
@@ -98,6 +100,23 @@ spawn(function()
         wait(0.1)
     end
 end)
+
+-- ✅ Auto Teleport to "Future" on death
+local function setupDeathHandler(char)
+    local humanoid = char:WaitForChild("Humanoid")
+    humanoid.Died:Connect(function()
+        if autoRespawnTeleportActive then
+            task.delay(1, function()
+                teleportEvent:FireServer("Future")
+                print("Auto Respawn Teleport -> Future")
+            end)
+        end
+    end)
+end
+
+-- hook into character spawns
+player.CharacterAdded:Connect(setupDeathHandler)
+if player.Character then setupDeathHandler(player.Character) end
 
 -- GUI
 local ScreenGui = Instance.new("ScreenGui")
@@ -198,10 +217,16 @@ createButton("Toggle Auto Sell (Gold)", 90, function()
     print("Auto Sell (Gold): "..(autoSellGoldActive and "ON" or "OFF"))
 end)
 
+-- ✅ NEW Auto Respawn Teleport Toggle
+createButton("Toggle Auto Respawn TP (Future)", 130, function()
+    autoRespawnTeleportActive = not autoRespawnTeleportActive
+    print("Auto Respawn Teleport: "..(autoRespawnTeleportActive and "ON" or "OFF"))
+end)
+
 -- Teleport Delay TextBox
 local delayLabel = Instance.new("TextLabel")
 delayLabel.Size = UDim2.new(0,200,0,20)
-delayLabel.Position = UDim2.new(0,10,0,130)
+delayLabel.Position = UDim2.new(0,10,0,170)
 delayLabel.BackgroundTransparency = 1
 delayLabel.Text = "Teleport Delay (seconds):"
 delayLabel.TextColor3 = Color3.new(1,1,1)
@@ -209,7 +234,7 @@ delayLabel.Parent = contentFrame
 
 local delayBox = Instance.new("TextBox")
 delayBox.Size = UDim2.new(0,200,0,25)
-delayBox.Position = UDim2.new(0,10,0,150)
+delayBox.Position = UDim2.new(0,10,0,190)
 delayBox.Text = tostring(teleportDelay)
 delayBox.BackgroundColor3 = Color3.fromRGB(60,60,60)
 delayBox.TextColor3 = Color3.new(1,1,1)
@@ -223,7 +248,7 @@ end)
 -- Weapon Name TextBox
 local weaponLabel = Instance.new("TextLabel")
 weaponLabel.Size = UDim2.new(0,200,0,20)
-weaponLabel.Position = UDim2.new(0,10,0,180)
+weaponLabel.Position = UDim2.new(0,10,0,220)
 weaponLabel.BackgroundTransparency = 1
 weaponLabel.Text = "Weapon Name:"
 weaponLabel.TextColor3 = Color3.new(1,1,1)
@@ -231,7 +256,7 @@ weaponLabel.Parent = contentFrame
 
 local weaponBox = Instance.new("TextBox")
 weaponBox.Size = UDim2.new(0,200,0,25)
-weaponBox.Position = UDim2.new(0,10,0,200)
+weaponBox.Position = UDim2.new(0,10,0,240)
 weaponBox.Text = selectedWeaponName
 weaponBox.BackgroundColor3 = Color3.fromRGB(60,60,60)
 weaponBox.TextColor3 = Color3.new(1,1,1)
@@ -248,7 +273,7 @@ local zones = {"Grassland","Desert","Iceland","Lavaland","Overseer","Egypt","Moo
 
 local dropdown = Instance.new("TextButton")
 dropdown.Size = UDim2.new(0,200,0,30)
-dropdown.Position = UDim2.new(0,10,0,230)
+dropdown.Position = UDim2.new(0,10,0,270)
 dropdown.Text = "Zone: "..selectedZone
 dropdown.BackgroundColor3 = Color3.fromRGB(70,70,70)
 dropdown.TextColor3 = Color3.fromRGB(255,255,255)
@@ -256,7 +281,7 @@ dropdown.Parent = contentFrame
 
 local dropdownFrame = Instance.new("ScrollingFrame")
 dropdownFrame.Size = UDim2.new(0,200,0,100)
-dropdownFrame.Position = UDim2.new(0,10,0,260)
+dropdownFrame.Position = UDim2.new(0,10,0,300)
 dropdownFrame.BackgroundColor3 = Color3.fromRGB(50,50,50)
 dropdownFrame.ScrollBarThickness = 6
 dropdownFrame.Visible = false
