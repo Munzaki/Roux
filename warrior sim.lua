@@ -106,40 +106,57 @@ ScreenGui.ResetOnSpawn = false -- keep GUI after death
 ScreenGui.Parent = player:WaitForChild("PlayerGui")
 
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0,220,0,350) -- increased height
+mainFrame.Size = UDim2.new(0,220,0,350)
 mainFrame.Position = UDim2.new(0.5,-110,0.5,-175)
 mainFrame.BackgroundColor3 = Color3.fromRGB(40,40,40)
 mainFrame.Parent = ScreenGui
 mainFrame.Active = true
 
--- ✅ Improved GUI Dragging (works on mobile + desktop)
+-- ✅ Mobile + Desktop GUI Dragging
 local dragging = false
-local dragStart, startPos
+local dragStartPos
+local frameStartPos
 
-local function updateDrag(input)
-    local delta = input.Position - dragStart
-    mainFrame.Position = UDim2.new(
-        startPos.X.Scale, startPos.X.Offset + delta.X,
-        startPos.Y.Scale, startPos.Y.Offset + delta.Y
-    )
+local function startDrag(input)
+    dragging = true
+    dragStartPos = input.Position
+    frameStartPos = mainFrame.Position
+end
+
+local function stopDrag()
+    dragging = false
+end
+
+local function doDrag(input)
+    if dragging then
+        local delta = input.Position - dragStartPos
+        mainFrame.Position = UDim2.new(
+            frameStartPos.X.Scale, frameStartPos.X.Offset + delta.X,
+            frameStartPos.Y.Scale, frameStartPos.Y.Offset + delta.Y
+        )
+    end
 end
 
 mainFrame.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = true
-        dragStart = input.Position
-        startPos = mainFrame.Position
+        startDrag(input)
         input.Changed:Connect(function()
             if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
+                stopDrag()
             end
         end)
     end
 end)
 
 UserInputService.InputChanged:Connect(function(input)
-    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-        updateDrag(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement then
+        doDrag(input)
+    end
+end)
+
+UserInputService.TouchMoved:Connect(function(touch, processed)
+    if dragging and not processed then
+        doDrag(touch)
     end
 end)
 
@@ -227,9 +244,8 @@ dropdown.BackgroundColor3 = Color3.fromRGB(70,70,70)
 dropdown.TextColor3 = Color3.fromRGB(255,255,255)
 dropdown.Parent = mainFrame
 
--- Use ScrollingFrame for scrollable dropdown
 local dropdownFrame = Instance.new("ScrollingFrame")
-dropdownFrame.Size = UDim2.new(0,200,0,120) -- visible area
+dropdownFrame.Size = UDim2.new(0,200,0,120)
 dropdownFrame.Position = UDim2.new(0,10,0,260)
 dropdownFrame.BackgroundColor3 = Color3.fromRGB(50,50,50)
 dropdownFrame.ScrollBarThickness = 6
