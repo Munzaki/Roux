@@ -18,6 +18,7 @@ local autoSellGoldActive = false
 local teleportDelay = 5 -- default seconds
 local selectedZone = "Moon"
 local selectedWeaponName = "Sword of the Epicredness"
+local guiCollapsed = false -- tracks if GUI is minimized
 
 -- Reference your sword (updated to use textbox weapon name)
 local function getSword()
@@ -112,7 +113,7 @@ mainFrame.BackgroundColor3 = Color3.fromRGB(40,40,40)
 mainFrame.Parent = ScreenGui
 mainFrame.Active = true
 
--- ✅ Improved GUI Dragging (patched in) – now mobile + desktop compatible
+-- ✅ Improved GUI Dragging (mobile + PC)
 local dragging = false
 local dragStart, startPos
 
@@ -162,17 +163,17 @@ local function createButton(text, y, callback)
     return btn
 end
 
-createButton("Toggle Kill Aura", 10, function()
+local killAuraBtn = createButton("Toggle Kill Aura", 10, function()
     killAuraActive = not killAuraActive
     print("Kill Aura: "..(killAuraActive and "ON" or "OFF"))
 end)
 
-createButton("Toggle Auto Sell (Moon)", 50, function()
+local autoSellBtn = createButton("Toggle Auto Sell (Moon)", 50, function()
     autoSellActive = not autoSellActive
     print("Auto Sell (Moon): "..(autoSellActive and "ON" or "OFF"))
 end)
 
-createButton("Toggle Auto Sell (Gold)", 90, function()
+local autoSellGoldBtn = createButton("Toggle Auto Sell (Gold)", 90, function()
     autoSellGoldActive = not autoSellGoldActive
     print("Auto Sell (Gold): "..(autoSellGoldActive and "ON" or "OFF"))
 end)
@@ -259,4 +260,23 @@ end
 
 dropdown.MouseButton1Click:Connect(function()
     dropdownFrame.Visible = not dropdownFrame.Visible
+end)
+
+-- ✅ Minimise/Maximise Button
+local minimiseBtn = Instance.new("TextButton")
+minimiseBtn.Size = UDim2.new(0,30,0,30)
+minimiseBtn.Position = UDim2.new(1,-35,0,5)
+minimiseBtn.Text = "-"
+minimiseBtn.BackgroundColor3 = Color3.fromRGB(90,90,90)
+minimiseBtn.TextColor3 = Color3.fromRGB(255,255,255)
+minimiseBtn.Parent = mainFrame
+
+minimiseBtn.MouseButton1Click:Connect(function()
+    guiCollapsed = not guiCollapsed
+    for _, obj in pairs(mainFrame:GetChildren()) do
+        if obj ~= minimiseBtn then
+            obj.Visible = not guiCollapsed
+        end
+    end
+    minimiseBtn.Text = guiCollapsed and "+" or "-"
 end)
